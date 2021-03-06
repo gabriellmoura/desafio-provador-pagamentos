@@ -1,13 +1,12 @@
 package br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.modifique;
 
-import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.pronto.DadosTransacao;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
-import static br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.modifique.StatusRecebivel.aguardando_liberacao_fundos;
-import static br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.modifique.StatusRecebivel.pago;
+import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.modifique.exceptions.TransacaoNaoSuportada;
+import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.pronto.DadosTransacao;
 
 public class RecebivelFactory {
     private RecebivelFactory() {}
@@ -33,15 +32,16 @@ public class RecebivelFactory {
     }
 
     private Recebivel criar(DadosTransacao transacao) {
-        Recebivel recebivel;
-        if (transacao.metodoEhDebito()) {
-            recebivel = new Recebivel(pago, LocalDate.now(), transacao.valor, 0.03);
-        } else if (transacao.metodoEhCredito()) {
-            recebivel = new Recebivel(aguardando_liberacao_fundos, LocalDate.now().plusDays(30), transacao.valor, 0.05);
-        } else {
-            throw new RuntimeException("Não foi possível criar um recebível para esse transação (" + transacao.toString() + ")");
-        }
 
-        return recebivel;
+        if (transacao.metodoEhDebito()) {
+			return new Recebivel(StatusRecebivel.PAGO, LocalDate.now(), transacao.valor, TaxaTransacao.DEBITO.value());
+        } else if (transacao.metodoEhCredito()) {
+			return new Recebivel(StatusRecebivel.AGUARDANDO_LIBERACAO_FUNDOS, LocalDate.now().plusDays(30), //
+					transacao.valor, TaxaTransacao.CREDITO.value());
+        }
+		throw new TransacaoNaoSuportada(
+				new StringJoiner("").add("Não foi possível criar um recebível para esse transação (")//
+						.add(transacao.toString())//
+						.add(")").toString());
     }
 }

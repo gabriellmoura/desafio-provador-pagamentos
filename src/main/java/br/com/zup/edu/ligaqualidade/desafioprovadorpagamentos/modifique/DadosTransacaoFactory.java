@@ -1,13 +1,13 @@
 package br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.modifique;
 
-import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.pronto.DadosTransacao;
-import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.pronto.MetodoPagamento;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.pronto.DadosTransacao;
+import br.com.zup.edu.ligaqualidade.desafioprovadorpagamentos.pronto.MetodoPagamento;
 
 public class DadosTransacaoFactory {
     private DadosTransacaoFactory() {
@@ -23,33 +23,16 @@ public class DadosTransacaoFactory {
         return instance;
     }
 
-    /**
-     *
-     * @param infoTransacoes
-     *  dados das transações. A String está formatada da seguinte maneira:
-     * 	<b>"valor,metodoPagamento,numeroCartao,nomeCartao,validade,cvv,idTransacao"</b>
-     * @return DadosTransacao
-     */
     public List<DadosTransacao> criar(List<String> infoTransacoes) {
         final List<DadosTransacao> transacoes = new ArrayList<>();
-        for (String dados : infoTransacoes) {
-            String[] transacoesEmTexto = dados.split(",");
-            DadosTransacao transacao = criar(transacoesEmTexto);
-            transacoes.add(transacao);
-        }
-
+		infoTransacoes.stream().forEach(row -> transacoes.add(criar(row.split(","))));
         return transacoes;
     }
 
     private DadosTransacao criar(String[] transacao) {
-        BigDecimal valor = BigDecimal.valueOf(Double.parseDouble(transacao[0]));
-        MetodoPagamento metodoPagamento = MetodoPagamento.valueOf(transacao[1]);
-        String numero = transacao[2];
-        String nome = transacao[3];
-        LocalDate validade = LocalDate.parse(transacao[4], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        int cvv = Integer.parseInt(transacao[5]);
-        int id = Integer.parseInt(transacao[6]);
-
-        return new DadosTransacao(valor, metodoPagamento, numero, nome, validade, cvv, id);
+		return new DadosTransacao(BigDecimal.valueOf(Double.parseDouble(transacao[0])),
+				MetodoPagamento.valueOf(transacao[1]), transacao[2], transacao[3],
+				LocalDate.parse(transacao[4], DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+				Integer.parseInt(transacao[5]), Integer.parseInt(transacao[6]));
     }
 }

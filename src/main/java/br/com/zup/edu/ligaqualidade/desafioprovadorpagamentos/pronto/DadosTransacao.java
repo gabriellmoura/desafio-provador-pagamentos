@@ -13,22 +13,22 @@ public class DadosTransacao {
 	public final int cvv;
 	public final int id;
 
-	public DadosTransacao(BigDecimal valor, MetodoPagamento metodo,
-			String numero, String nome, LocalDate validade, int cvv, int id) {
-				this.valor = valor;
-				this.metodo = metodo;
-				this.numero = numero;
-				this.nome = nome;
-				this.validade = validade;
-				this.cvv = cvv;
-				this.id = id;
+	public DadosTransacao(BigDecimal valor, MetodoPagamento metodo, String numero, String nome, LocalDate validade,
+			int cvv, int id) {
+		this.valor = valor;
+		this.metodo = metodo;
+		this.numero = numero;
+		this.nome = nome;
+		this.validade = validade;
+		this.cvv = cvv;
+		this.id = id;
 	}
 
 	public boolean metodoEhDebito() {
-		return metodo == MetodoPagamento.DEBITO;
+		return MetodoPagamento.DEBITO.equals(metodo);
 	}
 
 	public boolean metodoEhCredito() {
-		return metodo == MetodoPagamento.CREDITO;
+		return MetodoPagamento.CREDITO.equals(metodo);
 	}
 }
