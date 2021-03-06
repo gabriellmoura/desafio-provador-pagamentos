@@ -24,4 +24,11 @@ public class DadosTransacao {
 				this.id = id;
 	}
 
+	public boolean metodoEhDebito() {
+		return metodo == MetodoPagamento.DEBITO;
+	}
+
+	public boolean metodoEhCredito() {
+		return metodo == MetodoPagamento.CREDITO;
+	}
 }

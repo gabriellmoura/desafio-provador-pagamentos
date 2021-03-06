@@ -33,7 +33,6 @@ public class CenarioRecebiveisSemAdiantamento {
 						);
 			System.out.println(param);
 			paramsTransacoes.add(param);
-			
 		}
 		
 		List<String[]> retornos = Solucao.executa(paramsTransacoes,List.of());
